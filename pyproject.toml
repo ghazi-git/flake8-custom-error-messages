@@ -46,7 +46,7 @@ name = "flake8_custom_error_messages"
 [tool.tbump]
 
 [tool.tbump.version]
-current = "0.0.1"
+current = "0.1.0"
 regex = '''
   (?P<major>\d+)
   \.

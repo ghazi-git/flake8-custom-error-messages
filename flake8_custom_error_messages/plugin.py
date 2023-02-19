@@ -35,7 +35,7 @@ class Formatter(Default):
 
 class Plugin:
     name = "flake8-custom-error-messages"
-    version = "0.0.1"
+    version = "0.1.0"
 
     def __init__(self, tree):
         self.tree = tree
