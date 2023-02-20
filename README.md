@@ -58,7 +58,7 @@ repos:
           'DTZ005 Use django.utils.timezone.now() instead of datetime.now()',
           'TST000 {original_message} For more info, check the styleguide at https://some-domain.com'
         ]
-        additional_dependencies: [ "flake8-custom-error-messages==0.1.0" ]
+        additional_dependencies: [ "flake8-custom-error-messages==0.1.1" ]
 ```
 
 ## License
