@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 from flake8.formatting.default import Default
 from flake8.options.manager import OptionManager
@@ -25,12 +26,35 @@ class Formatter(Default):
             return super().format(error)
 
     def get_custom_error(self, code: str) -> "CustomError":
-        for custom_error in self.options.error_messages:
+        for custom_error in self.custom_errors:
             if code.startswith(custom_error.code):
                 return custom_error
 
     def after_init(self):
-        pass
+        error_messages = self.options.error_messages
+        if not error_messages:
+            msgs = []
+        elif isinstance(error_messages, str):
+            # parsed from the config file, so we need to convert it to a list
+            # flake8 does not support parsing values containing spaces from config
+            # files
+            msgs = [
+                line.strip()
+                for line in error_messages.splitlines()
+                if line.strip()
+            ]
+        else:
+            # when parsed from the command line, the value is already a list
+            msgs = error_messages
+
+        # split the error code from the custom error message
+        errors = []
+        for msg in msgs:
+            code = msg.split()[0]
+            text = msg.replace(code, "", 1).strip()
+            errors.append(CustomError(code, text))
+
+        self.custom_errors: List[CustomError] = errors
 
 
 class Plugin:
@@ -61,31 +85,6 @@ class Plugin:
             metavar="MSG",
             nargs="+",
         )
-
-    @classmethod
-    def parse_options(cls, options):
-        if not options.error_messages:
-            msgs = []
-        elif isinstance(options.error_messages, str):
-            # parsed from the config file, so we need to convert it to a list
-            # flake8 does not support parsing values containing spaces from config
-            # files
-            msgs = [
-                line.strip()
-                for line in options.error_messages.splitlines()
-                if line.strip()
-            ]
-        else:
-            # when parsed from the command line, the value is already a list
-            msgs = options.error_messages
-
-        # split the error code from the custom error message
-        errors = []
-        for msg in msgs:
-            code = msg.split()[0]
-            text = msg.replace(code, "", 1).strip()
-            errors.append(CustomError(code, text))
-        cls.error_messages = errors
 
 
 @dataclass
