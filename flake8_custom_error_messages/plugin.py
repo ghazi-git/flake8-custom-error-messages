@@ -39,9 +39,7 @@ class Formatter(Default):
             # flake8 does not support parsing values containing spaces from config
             # files
             msgs = [
-                line.strip()
-                for line in error_messages.splitlines()
-                if line.strip()
+                line.strip() for line in error_messages.splitlines() if line.strip()
             ]
         else:
             # when parsed from the command line, the value is already a list
